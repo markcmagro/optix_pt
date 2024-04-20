@@ -1,0 +1,11 @@
+{
+  "scene" : {
+    "gltf scene file" : "scenes/rings/alliance_ring.gltf",
+    "gltf up hint" : [0, 1, 0],
+
+    "renderer" : {
+      "dimensions" : [1920, 1080],
+      "background colour" : [1.0, 1.0, 1.0]
+    }
+  }
+}

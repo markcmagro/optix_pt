@@ -1,0 +1,11 @@
+{
+  "scene" : {
+    "gltf scene file" : "scenes/ior/ior.gltf",
+    "gltf up hint" : [0, 1, 0],
+
+    "renderer" : {
+      "dimensions" : [1920, 1080],
+      "background colour" : [0.051, 0.051, 0.051]
+    }
+  }
+}

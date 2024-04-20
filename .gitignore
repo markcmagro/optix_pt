@@ -1,0 +1,12 @@
+/.vs/
+/gallery/
+/images/
+/out/
+/ptx/
+
+*.exr
+*.hdr
+*.png
+
+imgui.ini
+scenes
