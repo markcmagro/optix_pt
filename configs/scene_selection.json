@@ -1,11 +1,12 @@
 {
-    "scene" : "8",
+    "scene" : "1",
     "1" : "metals",
-    "2" : "ior",
-    "3" : "waterbottle",
-    "4" : "coffee",
-    "5" : "shoe",
-    "6" : "alliance_ring",
-    "7" : "wall",
-    "8" : "alpha_blend_mode_test"
+    "2" : "transmissive",
+    "3" : "ior",
+    "4" : "waterbottle",
+    "5" : "coffee",
+    "6" : "shoe",
+    "7" : "alliance_ring",
+    "8" : "wall",
+    "9" : "alpha_blend_mode_test"
 }
