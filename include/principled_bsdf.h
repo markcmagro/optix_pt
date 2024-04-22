@@ -532,7 +532,7 @@ inline __device__ float3 transmissionGetNewRayDir(const MaterialMetallicRoughnes
     if (mat.category & MaterialFlags::Specular) {
         float3 newRayDir = specularTransmissionGetNewRayDir(mat, v, debug);
         if (debug)
-            printf("newRayDir=(%f, %f, %f)\n", newRayDir.x, newRayDir.y, newRayDir.z);
+            printf("  newRayDir=(%f, %f, %f)\n", newRayDir.x, newRayDir.y, newRayDir.z);
         return newRayDir;
     }
     else {
@@ -540,15 +540,17 @@ inline __device__ float3 transmissionGetNewRayDir(const MaterialMetallicRoughnes
         float3 newRayDir = refractRay(h, v, mat.ior);
 
         if (debug) {
-            printf("shadingNormal=(%f, %f, %f)\n", mat.shadingNormal.x, mat.shadingNormal.y, mat.shadingNormal.z);
-            printf("h=(%f, %f, %f)\n", h.x, h.y, h.z);
-            printf("newRayDir=(%f, %f, %f)\n", newRayDir.x, newRayDir.y, newRayDir.z);
+            printf("  shadingNormal=(%f, %f, %f)\n", mat.shadingNormal.x, mat.shadingNormal.y, mat.shadingNormal.z);
+            printf("  h=(%f, %f, %f)\n", h.x, h.y, h.z);
+            printf("  newRayDir=(%f, %f, %f)\n", newRayDir.x, newRayDir.y, newRayDir.z);
 
+            /*
+            // Comparing with specular transmission.
             float3 specularNewRayDir = specularTransmissionGetNewRayDir(mat, v, debug);
-            printf("specularNewRayDir=(%f, %f, %f)\n", specularNewRayDir.x, specularNewRayDir.y, specularNewRayDir.z);
-
-            printf("Angle between newRayDir and specularNewRayDir=%f degrees\n", acosf(dot(newRayDir,
+            printf("  specularNewRayDir=(%f, %f, %f)\n", specularNewRayDir.x, specularNewRayDir.y, specularNewRayDir.z);
+            printf("  Angle between newRayDir and specularNewRayDir=%f degrees\n", acosf(dot(newRayDir,
                 specularNewRayDir)) * 180.0f * M_1_PIf);
+            */
         }
 
         return newRayDir;
@@ -559,7 +561,7 @@ inline __device__ float3 transmissionBrdf(const MaterialMetallicRoughness &mat, 
     const float3 &v, bool debug)
 {
     if (debug)
-        printf("specularTransmissionBrdf()\n");
+        printf("transmissionBrdf()\n");
 
     if (mat.category & MaterialFlags::Specular) {
         float3 ret = specularTransmissionBrdf(mat, n, l, v, debug);
@@ -572,6 +574,7 @@ inline __device__ float3 transmissionBrdf(const MaterialMetallicRoughness &mat, 
         //float3 h = transmissionHalfVectorThinWalled(n, l, v);
         float3 h = transmissionHalfVectorVolumetric(n, l, v, 1.0f, 1.5f);
 
+        // See glTF KHR_materials_transmission.
         float hDotL_on_nDotL = dot(h, l) / dot(n, l);
         float hDotV_on_nDotV = dot(h, v) / dot(n, v);
         float magNDotL = fmaxf(fabs(dot(n, l)), 0.00001f); // to avoid division by zero
@@ -584,7 +587,6 @@ inline __device__ float3 transmissionBrdf(const MaterialMetallicRoughness &mat, 
         float3 ret = make_float3(V * D);
 
         if (debug) {
-            printf("transmissionBrdf:\n");
             printf("  V = %f\n", V);
             printf("  D = %f\n", D);
             printf("  brdf = (%f, %f, %f)\n", ret.x, ret.y, ret.z);

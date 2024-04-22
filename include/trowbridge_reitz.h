@@ -53,7 +53,7 @@ inline __device__ float trowbridgeReitzPdf(const float3 &normal, const float3 &h
     // - https://github.com/boksajak/brdf/blob/master/brdf.h.
     //   See sampleWalterReflectionPdf.
 
-    float nDotH = fmax(0.00001f, dot(normal, h));
+    float nDotH = dot(normal, h);
     float D = trowbridgeReitzD(nDotH, alpha, debug);
 
     float hDotV = dot(h, v);

@@ -54,10 +54,10 @@ extern "C" __global__ void __closesthit__radiance()
     const float3 NgObject = normalize(crossProduct); // object space
     const float3 Ng = optixTransformNormalFromObjectToWorldSpace(NgObject); // world space
 
-    if (prd.debug) {
-        printf("Geometric normal (object space)=(%f, %f, %f)\n", NgObject.x, NgObject.y, NgObject.z);
-        printf("Geometric normal (world space)=(%f, %f, %f)\n", Ng.x, Ng.y, Ng.z);
-    }
+    //if (prd.debug) {
+    //    printf("Geometric normal (object space)=(%f, %f, %f)\n", NgObject.x, NgObject.y, NgObject.z);
+    //    printf("Geometric normal (world space)=(%f, %f, %f)\n", Ng.x, Ng.y, Ng.z);
+    //}
 
     // Shading normal.
     float3 normal;
@@ -67,13 +67,13 @@ extern "C" __global__ void __closesthit__radiance()
         tempTc *= mat.normalTexTf.scale;
         tempTc += mat.normalTexTf.offset;
         float3 sampledN = (float3 &)tex2D<float4>(mat.normalTexture, tempTc.x, tempTc.y);
-        if (prd.debug)
-            printf("Sampled normal (pre-map)=(%f, %f, %f)\n", sampledN.x, sampledN.y, sampledN.z);
+        //if (prd.debug)
+        //    printf("Sampled normal (pre-map)=(%f, %f, %f)\n", sampledN.x, sampledN.y, sampledN.z);
 
         sampledN = sampledN * 2.0f - 1.0f;
         sampledN = normalize(sampledN);
-        if (prd.debug)
-            printf("Sampled normal=(%f, %f, %f)\n", sampledN.x, sampledN.y, sampledN.z);
+        //if (prd.debug)
+        //    printf("Sampled normal=(%f, %f, %f)\n", sampledN.x, sampledN.y, sampledN.z);
 
         // Generate T, B and N.
 
@@ -141,12 +141,6 @@ extern "C" __global__ void __closesthit__radiance()
 
         // Transform the sampled normal.
         normal = normalize(transformVector((float4 *)TBN, sampledN));
-
-        //if (prd.debug)
-        //    printf("Shading normal (pre-alignment)=(%f, %f, %f)\n", normal.x, normal.y, normal.z);
-
-        if (prd.debug)
-            printf("Shading normal=(%f, %f, %f)\n", normal.x, normal.y, normal.z);
     }
     else if (sbtData.normals) {
         normal = normalize(
@@ -322,7 +316,9 @@ extern "C" __global__ void __closesthit__radiance()
 
     if (!specularHit) {
         // Shift the hit point slightly to avoid the shadow terminator problem.
-        hitPoint += ffnormal * SHADOW_BIAS; // to support single-sided geometry
+        // Nudging in the -rayDir direction works well for both reflection and
+        // refraction.
+        hitPoint -= rayDir * SHADOW_BIAS;
     }
 
     if (category & MaterialFlags::Emission) {
@@ -568,10 +564,13 @@ extern "C" __global__ void __closesthit__radiance()
     }
 
     if (!prd.done) {
+        if (!specularHit) {
+            // Reverse shadow bias.
+            hitPoint += rayDir * SHADOW_BIAS;
+        }
+
+        // Nudge in the new direction.
         prd.origin = hitPoint + bsdfSample.newRayDir * SCENE_EPSILON;
-        // Hack for glossy transmission. FIX! (Implement the transmission
-        // microfacet BRDF; see KHR_materials_transmission).
-        //prd.origin = hitPoint + bsdfSample.newRayDir * SCENE_EPSILON * 100.0f;
 
         prd.dir = bsdfSample.newRayDir;
 
