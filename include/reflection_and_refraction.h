@@ -93,5 +93,5 @@ inline __host__ __device__ float3 transmissionHalfVectorVolumetric(const float3 
         //}
     }
 
-    return normalize(-etaI * v -etaV * l);
+    return normalize(-(etaI * v + etaV * l));
 }
