@@ -1,0 +1,19 @@
+{
+  "version": "0.2.1",
+  "defaults": {},
+  "configurations": [
+    {
+      "type": "default",
+      "project": "CMakeLists.txt",
+      "projectTarget": "optix_pt.exe",
+      "name": "optix_pt.exe",
+      "args": [
+        "configs/scene_selection_local.json"
+      ],
+      "currentDir": "${workspaceRoot}",
+      "env": {
+        "PATH": "%PATH%;${workspaceRoot}/external/bin"
+      }
+    }
+  ]
+}
